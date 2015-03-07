@@ -5,7 +5,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.Random;
 
-public class BelZab implements Runnable
+public class BelZhab implements Runnable
 {
 	public static final int A = 0;
 	public static final int B = 1;
@@ -33,13 +33,13 @@ public class BelZab implements Runnable
 	private int inicio;
 	private int fin;
 	
-	private BelZab(int ancho, int alto, double alfa, double beta, double gamma, int inicio, int fin)
+	private BelZhab(int ancho, int alto, double alfa, double beta, double gamma, int inicio, int fin)
 	{
 		this.inicio = inicio;
 		this.fin    = fin;
 	}
 	
-	public BelZab(int ancho, int alto, double alfa, double beta, double gamma)
+	public BelZhab(int ancho, int alto, double alfa, double beta, double gamma)
 	{
 		this.ancho = ancho;
 		this.alto  = alto;
@@ -65,14 +65,14 @@ public class BelZab implements Runnable
 			if ((i+1) == nucleos)
 				finIntervalo = alto;
 			
-			tareas[i] = new BelZab(ancho, alto, alfa, beta, gamma, inicioIntervalo, finIntervalo);
+			tareas[i] = new BelZhab(ancho, alto, alfa, beta, gamma, inicioIntervalo, finIntervalo);
 		}
 		
 		random = new Random();
 		aleatorio();
 	}
 	
-	public BelZab(int ancho, int alto)
+	public BelZhab(int ancho, int alto)
 	{
 		this(ancho, alto, 1.2, 1, 1);
 	}
@@ -115,7 +115,7 @@ public class BelZab implements Runnable
 			if ((i+1) == nucleos)
 				finIntervalo = alto;
 			
-			tareas[i] = new BelZab(ancho, alto, alfa, beta, gamma, inicioIntervalo, finIntervalo);
+			tareas[i] = new BelZhab(ancho, alto, alfa, beta, gamma, inicioIntervalo, finIntervalo);
 		}
 		
 		reentrant.unlock();
@@ -173,12 +173,12 @@ public class BelZab implements Runnable
 			}
 			catch (InterruptedException e)
 			{
-				System.out.println("InterruptedException: BelZab.siguienteGeneracion()");
+				System.out.println("InterruptedException: BelZhab.siguienteGeneracion()");
 				System.out.println("Error: " + e.getMessage());
 			}
 			catch (BrokenBarrierException e)
 			{
-				System.out.println("BrokenBarrierException: BelZab.siguienteGeneracion()");
+				System.out.println("BrokenBarrierException: BelZhab.siguienteGeneracion()");
 				System.out.println("Error: " + e.getMessage());
 			}
 		}
@@ -256,12 +256,12 @@ public class BelZab implements Runnable
 			}
 			catch (InterruptedException e)
 			{
-				System.out.println("InterruptedException: BelZab.run()");
+				System.out.println("InterruptedException: BelZhab.run()");
 				System.out.println("Error: " + e.getMessage());
 			}
 			catch (BrokenBarrierException e)
 			{
-				System.out.println("BrokenBarrierException: BelZab.run()");
+				System.out.println("BrokenBarrierException: BelZhab.run()");
 				System.out.println("Error: " + e.getMessage());
 			}
 		}

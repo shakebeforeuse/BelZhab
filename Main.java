@@ -15,7 +15,7 @@ public class Main
 			tam = teclado.nextInt();
 		}
 		
-		BelZab game = new BelZab(tam, tam);
+		BelZhab game = new BelZhab(tam, tam);
 		
 		VisorImagen ventana = new VisorImagen();
 		ventana.setVisible(true);

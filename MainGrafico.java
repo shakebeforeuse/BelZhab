@@ -18,7 +18,7 @@ import javax.swing.SwingWorker;
 
 public class MainGrafico
 {
-	private static BelZab reaccion;
+	private static BelZhab reaccion;
 	private static BufferedImage imagen;
 	
 	private static JFrame frame;
@@ -122,7 +122,7 @@ public class MainGrafico
 				double campoBeta  = Double.parseDouble(beta.getText());
 				double campoGamma = Double.parseDouble(gamma.getText());
 				
-				reaccion = new BelZab(campoTam, campoTam, campoAlfa, campoBeta, campoGamma);
+				reaccion = new BelZhab(campoTam, campoTam, campoAlfa, campoBeta, campoGamma);
 				if (picLabel == null)
 				{
 					picLabel = new JLabel(new ImageIcon(convertir(reaccion.mostrar())));

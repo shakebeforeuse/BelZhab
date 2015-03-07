@@ -25,7 +25,7 @@ public class Speedup
 		
 		tiempos = new double[maxTareas];
 		
-		BelZab reaccion = new BelZab(tam, tam);
+		BelZhab reaccion = new BelZhab(tam, tam);
 		reaccion.pasos(100);
 		
 		System.out.println("Tareas\tSpeedup\tTiempo");
