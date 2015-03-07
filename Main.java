@@ -35,6 +35,7 @@ public class Main
 		}
 		double tac = System.currentTimeMillis();
 		
+		game.close();
 		System.out.println(tac-tic);
 	}
 }

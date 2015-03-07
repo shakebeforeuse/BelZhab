@@ -2,6 +2,7 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.Random;
 
 public class BelZab implements Runnable
@@ -16,6 +17,7 @@ public class BelZab implements Runnable
 	private static double alfa;
 	private static double beta;
 	private static double gamma;
+	private static int pasos;
 	
 	private static int ancho;
 	private static int alto;
@@ -26,6 +28,7 @@ public class BelZab implements Runnable
 	private static ExecutorService threadPool;
 	private static Runnable[] tareas;
 	private static CyclicBarrier barrera;
+	private static ReentrantLock reentrant;
 	
 	private int inicio;
 	private int fin;
@@ -42,6 +45,7 @@ public class BelZab implements Runnable
 		this.alto  = alto;
 		reaccion   = new double[2][3][alto][ancho];
 		generacion = 0;
+		pasos      = 1;
 		
 		this.alfa  = alfa;
 		this.beta  = beta;
@@ -51,6 +55,7 @@ public class BelZab implements Runnable
 		threadPool = Executors.newFixedThreadPool(nucleos);
 		barrera    = new CyclicBarrier(nucleos + 1);
 		tareas     = new Runnable[nucleos];
+		reentrant  = new ReentrantLock();
 		
 		for (int i = 0; i < nucleos; ++i)
 		{
@@ -74,6 +79,8 @@ public class BelZab implements Runnable
 	
 	public void aleatorio()
 	{
+		reentrant.lock();
+		
 		generacion = 0;
 		
 		for (int i = 0; i < alto; ++i)
@@ -85,27 +92,71 @@ public class BelZab implements Runnable
 				reaccion[0][C][i][j] = random.nextDouble();
 			}
 		}
+		
+		reentrant.unlock();
+	}
+	
+	public void nucleos(int n)
+	{
+		reentrant.lock();
+		
+		this.close();
+		
+		nucleos = n;
+		threadPool = Executors.newFixedThreadPool(nucleos);
+		barrera    = new CyclicBarrier(nucleos + 1);
+		tareas     = new Runnable[nucleos];
+		
+		for (int i = 0; i < nucleos; ++i)
+		{
+			int inicioIntervalo = i * (alto / nucleos);
+			int finIntervalo    = (i+1) * (alto/nucleos);
+			
+			if ((i+1) == nucleos)
+				finIntervalo = alto;
+			
+			tareas[i] = new BelZab(ancho, alto, alfa, beta, gamma, inicioIntervalo, finIntervalo);
+		}
+		
+		reentrant.unlock();
+	}
+	
+	public void pasos(int n)
+	{
+		reentrant.lock();
+		
+		pasos = n;
+		
+		reentrant.unlock();
 	}
 	
 	public static void siguienteGeneracion()
 	{
-		for (int i = 0; i < nucleos; ++i)
+		reentrant.lock();
+		
+		for (int i = 0; i < tareas.length; ++i)
 			threadPool.execute(tareas[i]);
-			
-		try
+		
+		for (int i = 0; i < pasos; ++i)
 		{
-			barrera.await();
-			barrera.reset();
-			++generacion;
+			try
+			{
+				if (barrera.await() == 0)
+					++generacion;
+			}
+			catch (InterruptedException e)
+			{
+				System.out.println("InterruptedException: BelZab.siguienteGeneracion()");
+				System.out.println("Error: " + e.getMessage());
+			}
+			catch (BrokenBarrierException e)
+			{
+				System.out.println("BrokenBarrierException: BelZab.siguienteGeneracion()");
+				System.out.println("Error: " + e.getMessage());
+			}
 		}
-		catch (InterruptedException e)
-		{
-			System.out.println("Error: " + e.getMessage());
-		}
-		catch (BrokenBarrierException e)
-		{
-			System.out.println("Error: " + e.getMessage());
-		}
+		
+		reentrant.unlock();
 	}
 	
 	private void subGeneracion()
@@ -153,24 +204,39 @@ public class BelZab implements Runnable
 	
 	public static double[][][] mostrar()
 	{
-		return reaccion[generacion % 2];
+		reentrant.lock();
+		
+		try
+		{
+			return reaccion[generacion % 2];
+		}
+		finally
+		{
+			reentrant.unlock();
+		}
 	}
 	
 	public void run()
 	{
-		subGeneracion();
-		
-		try
+		for (int i = 0; i < pasos; ++i)
 		{
-			barrera.await();
-		}
-		catch (InterruptedException e)
-		{
-			System.out.println("Error: " + e.getMessage());
-		}
-		catch (BrokenBarrierException e)
-		{
-			System.out.println("Error: " + e.getMessage());
+			subGeneracion();
+			
+			try
+			{
+				if (barrera.await() == 0)
+					++generacion;
+			}
+			catch (InterruptedException e)
+			{
+				System.out.println("InterruptedException: BelZab.run()");
+				System.out.println("Error: " + e.getMessage());
+			}
+			catch (BrokenBarrierException e)
+			{
+				System.out.println("BrokenBarrierException: BelZab.run()");
+				System.out.println("Error: " + e.getMessage());
+			}
 		}
 	}
 	
@@ -182,6 +248,21 @@ public class BelZab implements Runnable
 		
 		return r;
 	}
+	
+	public void close()
+	{
+		reentrant.lock();
+		
+		while (!threadPool.isTerminated())
+			threadPool.shutdown();
+			
+		reentrant.unlock();
+	}
+	
+	/*protected void finalize()
+	{
+		this.close();
+	}*/
 }
 
 
