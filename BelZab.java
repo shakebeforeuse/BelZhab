@@ -130,6 +130,33 @@ public class BelZab implements Runnable
 		reentrant.unlock();
 	}
 	
+	public void alfa(double alfa)
+	{
+		reentrant.lock();
+		
+		this.alfa = alfa;
+		
+		reentrant.unlock();
+	}
+	
+	public void beta(double beta)
+	{
+		reentrant.lock();
+		
+		this.beta = beta;
+		
+		reentrant.unlock();
+	}
+	
+	public void gamma(double gamma)
+	{
+		reentrant.lock();
+		
+		this.gamma = gamma;
+		
+		reentrant.unlock();
+	}
+	
 	public static void siguienteGeneracion()
 	{
 		reentrant.lock();
