@@ -26,16 +26,19 @@ public class Speedup
 		tiempos = new double[maxTareas];
 		
 		BelZhab reaccion = new BelZhab(tam, tam);
-		reaccion.pasos(100);
 		
 		System.out.println("Tareas\tSpeedup\tTiempo");
 		
 		for (int n = 1; n <= maxTareas; ++n)
 		{
+			reaccion.close();
 			reaccion.nucleos(n);
 			
 			tic = System.currentTimeMillis();
-			reaccion.siguienteGeneracion();
+			
+			for (int i = 0; i < 100; ++i)
+				reaccion.siguienteGeneracion();
+				
 			tac = System.currentTimeMillis();
 			
 			tiempos[n - 1] = (tac - tic) / 100;

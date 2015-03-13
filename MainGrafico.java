@@ -122,7 +122,7 @@ public class MainGrafico
 				double campoBeta  = Double.parseDouble(beta.getText());
 				double campoGamma = Double.parseDouble(gamma.getText());
 				
-				reaccion = new BelZhab(campoTam, campoTam, campoAlfa, campoBeta, campoGamma);
+				reaccion = new BelZhab(campoTam, campoTam, campoAlfa, campoBeta, campoGamma, Runtime.getRuntime().availableProcessors());
 				if (picLabel == null)
 				{
 					picLabel = new JLabel(new ImageIcon(convertir(reaccion.mostrar())));
